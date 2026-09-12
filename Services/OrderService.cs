@@ -1,44 +1,35 @@
 ﻿using ProvaPub.Models;
-using ProvaPub.Repository;
+using ProvaPub.Patterns.Strategy;
+using ProvaPub.Repository.Inteface;
+using ProvaPub.Services.Interface;
 
 namespace ProvaPub.Services
 {
-	public class OrderService
-	{
-        TestDbContext _ctx;
+    public class OrderService : IOrderService
+    {
+        private readonly IEnumerable<IPaymentStrategy> _paymentStrategies;
+        private readonly IOrderRepository _orderRepository;
 
-        public OrderService(TestDbContext ctx)
+        public OrderService(IEnumerable<IPaymentStrategy> paymentStrategies, IOrderRepository orderRepository)
         {
-            _ctx = ctx;
+            _paymentStrategies = paymentStrategies;
+            _orderRepository = orderRepository;
         }
 
         public async Task<Order> PayOrder(string paymentMethod, decimal paymentValue, int customerId)
-		{
-			if (paymentMethod == "pix")
-			{
-				//Faz pagamento...
-			}
-			else if (paymentMethod == "creditcard")
-			{
-				//Faz pagamento...
-			}
-			else if (paymentMethod == "paypal")
-			{
-				//Faz pagamento...
-			}
-
-			return await InsertOrder(new Order() //Retorna o pedido para o controller
-            {
-                Value = paymentValue
-            });
-
-
-		}
-
-		public async Task<Order> InsertOrder(Order order)
         {
-			//Insere pedido no banco de dados
-			return (await _ctx.Orders.AddAsync(order)).Entity;
+            var strategy = _paymentStrategies.FirstOrDefault(s =>
+                s.PaymentMethod.Equals(paymentMethod, StringComparison.OrdinalIgnoreCase)) 
+                ?? throw new ArgumentException($"Meio de pagamento '{paymentMethod}' não é suportado.");
+
+            await strategy.ProcessPaymentAsync(paymentValue, customerId);
+            return await _orderRepository.InsertOrder(new Order() //Retorna o pedido para o controller
+            {
+                Value = paymentValue,
+                CustomerId = customerId,
+                OrderDate = DateTime.Now,
+
+            });
         }
-	}
+    }
 }
