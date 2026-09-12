@@ -1,4 +1,5 @@
-﻿using ProvaPub.Models;
+﻿using ProvaPub.Exception;
+using ProvaPub.Models;
 using ProvaPub.Patterns.Strategy;
 using ProvaPub.Repository.Inteface;
 using ProvaPub.Services.Interface;
@@ -20,7 +21,7 @@ namespace ProvaPub.Services
         {
             var strategy = _paymentStrategies.FirstOrDefault(s =>
                 s.PaymentMethod.Equals(paymentMethod, StringComparison.OrdinalIgnoreCase))
-                ?? throw new ArgumentException($"Meio de pagamento '{paymentMethod}' não é suportado.");
+                ?? throw new BusinessException($"Meio de pagamento '{paymentMethod}' não é suportado.");
 
             await strategy.ProcessPaymentAsync(paymentValue, customerId);
 

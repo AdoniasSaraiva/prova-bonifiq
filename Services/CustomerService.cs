@@ -1,4 +1,5 @@
-﻿using ProvaPub.Models;
+﻿using ProvaPub.Exception;
+using ProvaPub.Models;
 using ProvaPub.Repository.Inteface;
 using ProvaPub.Services.Interface;
 
@@ -29,13 +30,13 @@ namespace ProvaPub.Services
 
         public async Task<bool> CanPurchase(int customerId, decimal purchaseValue)
         {
-            if (customerId <= 0) throw new ArgumentOutOfRangeException(nameof(customerId));
+            if (customerId <= 0) throw new BusinessException("O valor da propriedade 'CustomerId' não poder ser 0 ou menor que 0.");
 
-            if (purchaseValue <= 0) throw new ArgumentOutOfRangeException(nameof(purchaseValue));
+            if (purchaseValue <= 0) throw new BusinessException("O valor da propriedade 'PurchaseValue' não poder ser 0 ou menor que 0.");
 
             //Business Rule: Non registered Customers cannot purchase
             var customer = await _customerRepository.GetByIdAsync(customerId) ??
-                throw new InvalidOperationException($"Customer Id {customerId} does not exists");
+                throw new BusinessException($"Customer Id {customerId} does not exists");
 
             //Business Rule: A customer can purchase only a single time per month
             var baseDate = DateTime.UtcNow.AddMonths(-1);

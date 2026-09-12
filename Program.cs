@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using ProvaPub.Exception;
 using ProvaPub.Patterns.Strategy;
 using ProvaPub.Patterns.Strategy.PaymentStrategyMethod;
 using ProvaPub.Repository;
@@ -49,6 +50,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 
