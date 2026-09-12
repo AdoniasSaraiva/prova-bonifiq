@@ -19,8 +19,8 @@ namespace ProvaPub.Controllers
 		/// Como você faria pra criar uma estrutura melhor, com menos repetição de código? E quanto ao CustomerService/ProductService. Você acha que seria possível evitar a repetição de código?
 		/// 
 		/// </summary>
-		IProductService _productService;
-		ICustomerService _customerService;
+		private readonly IProductService _productService;
+		private readonly ICustomerService _customerService;
 		public Parte2Controller(IProductService productService, ICustomerService customerService)	
 		{
 			_productService = productService;

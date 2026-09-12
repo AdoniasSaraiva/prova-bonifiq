@@ -19,17 +19,20 @@ namespace ProvaPub.Services
         public async Task<Order> PayOrder(string paymentMethod, decimal paymentValue, int customerId)
         {
             var strategy = _paymentStrategies.FirstOrDefault(s =>
-                s.PaymentMethod.Equals(paymentMethod, StringComparison.OrdinalIgnoreCase)) 
+                s.PaymentMethod.Equals(paymentMethod, StringComparison.OrdinalIgnoreCase))
                 ?? throw new ArgumentException($"Meio de pagamento '{paymentMethod}' não é suportado.");
 
             await strategy.ProcessPaymentAsync(paymentValue, customerId);
-            return await _orderRepository.InsertOrder(new Order() //Retorna o pedido para o controller
+
+            var orderCreated = await _orderRepository.InsertOrder(new Order() //Retorna o pedido para o controller
             {
                 Value = paymentValue,
-                CustomerId = customerId,
-                OrderDate = DateTime.Now,
-
+                CustomerId = customerId
             });
+
+            orderCreated.OrderDate = orderCreated.OrderDate.AddHours(-3);
+
+            return orderCreated;
         }
     }
 }

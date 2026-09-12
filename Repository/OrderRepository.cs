@@ -20,7 +20,10 @@ namespace ProvaPub.Repository
         public async Task<Order> InsertOrder(Order order)
         {
             //Insere pedido no banco de dados
-            return (await _context.Orders.AddAsync(order)).Entity;
+            var orderCreated = (await _context.Orders.AddAsync(order)).Entity;
+            await _context.SaveChangesAsync();
+
+            return orderCreated;
         }
     }
 }

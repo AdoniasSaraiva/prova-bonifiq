@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using ProvaPub.Patterns.Strategy;
 using ProvaPub.Patterns.Strategy.PaymentStrategyMethod;
@@ -29,6 +30,13 @@ builder.Services.AddScoped<IPaymentStrategy, PaypalPaymentStrategy>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IRandomRepository, RandomRepository>();
 
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition =
+            JsonIgnoreCondition.WhenWritingNull;
+    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
