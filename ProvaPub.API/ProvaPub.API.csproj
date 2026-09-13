@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\**" />
+    <Content Remove="Migrations\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.4">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProvaPub.Application\ProvaPub.Application\ProvaPub.Application.csproj" />
+    <ProjectReference Include="..\ProvaPub.Domain\ProvaPub.Domain\ProvaPub.Domain.csproj" />
+    <ProjectReference Include="..\ProvaPub.Infra\ProvaPub.Infra\ProvaPub.Infra.csproj" />
+  </ItemGroup>
+
+</Project>
